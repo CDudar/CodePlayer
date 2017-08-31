@@ -1,0 +1,285 @@
+<html>
+
+    <head>
+    
+        <title>JQueryUI</title>
+    
+        <script type="text/javascript"src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        
+        <style type="text/css">
+            
+            body{
+                margin:0;
+                padding:0;
+            }
+            
+            #topbar{
+                width:auto;
+                height:55px;
+                margin:0 auto;
+                background-color:#EEEEEE;
+          
+            }
+            
+            #logo{
+                font-size:24px;
+                font-weight:bold;
+                padding:12px;
+                float:left;
+               
+            }
+            
+            #panelSelector{
+                width:291px;
+                margin:0 auto;
+                padding:5px;
+                
+                
+            }
+            
+            .panelButton{
+                padding:10px;
+                font-size:18;
+                float:left;
+                border:1px solid black;
+                border-left:none;
+                
+            }
+            
+            #html{
+                border-top-left-radius: 10px;
+                border-bottom-left-radius: 10px;
+                border-left:1px solid black;
+                
+            }
+
+            #output{
+                border-top-right-radius: 10px;
+                border-bottom-right-radius: 10px;
+                
+            }
+            
+            .activeButton{
+                background-color:#59B8E6;
+            
+            }
+            
+            .highlighted{
+                background-color:#808080;
+                
+            }
+            
+            #output{
+                border-right:1px solid black;
+                
+            }
+            
+            #panelContainer{
+                background-color:white;
+                height:500px;
+                width:auto;
+                
+            }
+            
+            .panel{
+                float:left;
+                display:inline;
+                
+            }
+            
+            .input {
+                height:100%;
+                width:100%;
+                resize:none;
+                border-top:none;
+                border-left:none;
+                border-color:gray;
+               
+            }
+            
+            #outputResult{
+                height:100%;
+                width:100%;    
+                border:0;
+                
+            }
+            
+            .outputPanel{
+                height:100%;
+                width:100%;
+                
+            }
+            
+            #cssPanel{
+                display:none;
+                
+            }
+            
+            #javascriptPanel{
+                display:none;
+                
+            }            
+
+            
+        </style>
+                
+    </head>
+
+    <body>
+        
+        <div id="topbar">
+        
+            <div id="logo">
+            
+               CodePlayer
+               
+            </div>
+            
+            <div id="panelSelector">
+                
+                <div id="html" class="panelButton activeButton">HTML</div>
+                
+                <div id="css" class="panelButton">CSS</div>
+                
+                <div id="javascript" class="panelButton">Javascript</div>
+                
+                <div id="output" class="panelButton activeButton">Output</div> 
+            
+            </div>
+            
+        </div>
+        
+        <div id ="panelContainer">
+             
+            <div id="htmlPanel" class="panel">
+            
+               <textarea id="htmlInput" class="input"><p id="paragraph">Text overwritten</p></textarea>
+            
+            </div>
+            
+            <div id="cssPanel" class="panel">
+            
+                <textarea id="cssInput" class="input">p { color:red; }</textarea>
+                
+            </div>
+            
+            <div id="javascriptPanel" class="panel">
+                
+                <textarea id="javascriptInput" class="input">document.getElementById("paragraph").innerHTML = "Hello World!";</textarea>
+                
+            </div>        
+            
+            <div id="outputPanel" class="panel">
+            
+               <iframe id="outputResult" src="about:blank"></iframe>
+            
+            </div>             
+             
+             
+        </div>
+        
+        
+        
+        <script type="text/javascript">
+
+            var activePanels = 2;
+            
+            var panels = ["#htmlPanel", "#cssPanel", "#javascriptPanel", "#outputPanel"];
+                
+            $(".panel").height( $(window).height() - $("#topbar").height() );
+            
+            realignPanels();
+            
+            updateOutput();
+            
+                        
+            function realignPanels(){    
+                
+                var percentage =  String(100 / activePanels);
+            
+                var percentageString = "" + percentage + "%";
+                
+                for(i = 0; i < panels.length; i++){
+
+              
+                    ($(panels[i]).css("width", percentageString));
+                }
+            }
+            
+            
+            function updateOutput(){
+                
+                $("#outputResult").contents().find("html").html("<html><head>" +  "<style type='text/css'>" + $("#cssInput").val() + "</style>" + "</head><body>" + $("#htmlInput").val() + "</body></html>");
+                
+                document.getElementById("outputResult").contentWindow.eval( $("#javascriptInput").val() );
+                
+            }             
+            
+
+            $(".panelButton").hover(function () {
+                
+                $(this).addClass("highlighted");
+                   
+            }, function() {
+                
+                $(this).removeClass("highlighted");
+            
+            });
+               
+            
+            $(".panelButton").click(function () {  
+                
+                $(this).toggleClass("activeButton");
+                
+                $(this).removeClass("highlighted");
+                
+                var affectedPanel = "#" + (this.id) + "Panel";
+                
+                if($(affectedPanel).css("display") == "block"){
+                
+                    $(affectedPanel).css("display", "none");
+                    
+                    activePanels--;
+                    
+                }
+                
+                
+                else{
+                    
+                     $(affectedPanel).css("display", "block");
+                    
+                    activePanels++;
+                    
+                    
+                }
+                
+                realignPanels();
+                    
+                
+            });
+            
+            $(".input").on("change keyup", function (){
+                
+                updateOutput();
+            
+                
+            });
+            
+        </script>
+        
+        
+    </body>
+
+
+</html>
+
+
+
+
+
